@@ -6,7 +6,7 @@
             "value": false
         },
         "virtualNetworkName": {
-            "value": "mgmt-dev001-weu-ntwk-vnt"
+            "value": "svgr-dev001-weu-ntwk-vnt"
         },
         "peeredNetworks": {
             "value": [
