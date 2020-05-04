@@ -1,0 +1,70 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.1",
+    "parameters": {
+        "keyVaultAccessPolicies": {
+            "value": [
+                {
+                    "tenantId": "00000000-0000-0000-0000-000000000000",
+                    "objectId": "00000000-0000-0000-0000-000000000000",
+                    "permissions": {
+                        "keys": [
+                            "Get",
+                            "List",
+                            "Update",
+                            "Create",
+                            "Import",
+                            "Delete",
+                            "Recover",
+                            "Backup",
+                            "Restore"
+                        ],
+                        "secrets": [
+                            "Get",
+                            "List",
+                            "Set",
+                            "Delete",
+                            "Recover",
+                            "Backup",
+                            "Restore"
+                        ],
+                        "certificates": [
+                            "Get",
+                            "List",
+                            "Update",
+                            "Create",
+                            "Import",
+                            "Delete",
+                            "Recover",
+                            "Backup",
+                            "Restore",
+                            "ManageContacts",
+                            "ManageIssuers",
+                            "GetIssuers",
+                            "ListIssuers",
+                            "SetIssuers",
+                            "DeleteIssuers"
+                        ]
+                    }
+                }
+            ]
+        },
+        "keyVaultNetworkAcls": {
+            "value": {
+                "defaultAction": "Allow",
+                "bypass": "AzureServices",
+                "virtualNetworkRules": [],
+                "ipRules": []
+            }
+        },
+        "diagnosticResourceGroupName": {
+            "value": "svgr-dev001-weu-core-rsg"
+        },
+        "diagnosticOmsWorkspaceName": {
+            "value": "svgr-dev001-weu-core-law"
+        },
+        "diagnosticEventHubNamespaceName": {
+            "value": "svgr-dev001-weu-core-ehn"
+        }
+    }
+}

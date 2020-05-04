@@ -1,0 +1,40 @@
+parameters:
+  dependsOn: ''
+  environmentName: ''
+  location: ''
+  locationShort: ''
+  serviceGroup: ''
+  sourcesPipeline: ''
+  sourcesProject: ''
+  vmImage: ''
+
+stages:
+  - stage: deploy_${{ parameters.environmentName }}
+    dependsOn: '${{ parameters.dependsOn }}'
+    displayName: "${{ format('deploy {0}', parameters.environmentName) }}"
+    jobs:
+    - template: ../jobs/deployCore.yml
+      parameters:
+        connectedServiceName: "${{ format('{0}-{1}-sub-spn', parameters.serviceGroup, parameters.environmentName) }}"
+        environmentName: '${{ parameters.environmentName }}'
+        dependsOn: ''
+        location: '${{ parameters.location }}'
+        locationShort: '${{ parameters.locationShort }}'
+        serviceGroup: '${{ parameters.serviceGroup }}'
+        serviceName: 'core'
+        sourcesPipeline: '${{ parameters.sourcesPipeline }}'
+        sourcesProject: '${{ parameters.sourcesProject }}'
+        vmImage: '${{ parameters.vmImage }}'
+
+    - template: ../jobs/deployNtwk.yml
+      parameters:
+        connectedServiceName: "${{ format('{0}-{1}-sub-spn', parameters.serviceGroup, parameters.environmentName) }}"
+        dependsOn: 'core'
+        environmentName: '${{ parameters.environmentName }}'
+        location: '${{ parameters.location }}'
+        locationShort: '${{ parameters.locationShort }}'
+        serviceGroup: '${{ parameters.serviceGroup }}'
+        serviceName: 'ntwk'
+        sourcesPipeline: '${{ parameters.sourcesPipeline }}'
+        sourcesProject: '${{ parameters.sourcesProject }}'
+        vmImage: '${{ parameters.vmImage }}'

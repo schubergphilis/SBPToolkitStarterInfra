@@ -1,0 +1,92 @@
+parameters:
+  connectedServiceName: ''
+  dependsOn: ''
+  environmentName: ''
+  location: ''
+  locationShort: ''
+  serviceGroup: ''
+  serviceName: ''
+  sourcesPipeline: ''
+  sourcesProject: ''
+  vmImage: ''
+
+jobs:
+  - deployment: ${{ parameters.serviceName }}
+    dependsOn:
+    - ${{ if parameters.dependsOn }}:
+      - ${{ parameters.dependsOn }}
+    displayName: "${{ format('Deploy {0}', parameters.serviceName) }}"
+    pool:
+      vmImage: ${{ parameters.vmImage }}
+    environment: ${{ parameters.environmentName }}
+    strategy:
+        runOnce:
+          deploy:
+            steps:
+            - template: ../steps/artifactsAndNaming.yml
+              parameters:
+                connectedServiceName: '${{ parameters.connectedServiceName }}'
+                location: '${{ parameters.location }}'
+                resourceGroupName: "${{ format('{0}-{1}-{2}-{3}-rsg', parameters.serviceGroup, parameters.environmentName, parameters.locationShort, parameters.serviceName) }}"
+                sourcesPipeline: '${{ parameters.sourcesPipeline }}'
+                sourcesProject: '${{ parameters.sourcesProject }}'
+
+            - task: AzureResourceGroupDeployment@2
+              displayName: 'Deploy Network Security Group - default'
+              inputs:
+                azureSubscription: '${{ parameters.connectedServiceName }}'
+                resourceGroupName: "${{ format('{0}-{1}-{2}-{3}-rsg', parameters.serviceGroup, parameters.environmentName, parameters.locationShort, parameters.serviceName) }}"
+                location: '${{ parameters.location }}'
+                csmFile: '$(System.ArtifactsDirectory)/Sources/Templates/networkSecurityGroup.json'
+                csmParametersFile: '../buildartifacts.copyandpublish/$(environmentName)/networkSecurityGroup-default.param.json'
+                overrideParameters: '-nsgBaseName $(networkSecurityGroupName)'
+
+            - task: AzureResourceGroupDeployment@2
+              displayName: 'Deploy Network Security Group - AzureBastionSubnet'
+              inputs:
+                azureSubscription: '${{ parameters.connectedServiceName }}'
+                resourceGroupName: "${{ format('{0}-{1}-{2}-{3}-rsg', parameters.serviceGroup, parameters.environmentName, parameters.locationShort, parameters.serviceName) }}"
+                location: '${{ parameters.location }}'
+                csmFile: '$(System.ArtifactsDirectory)/Sources/Templates/networkSecurityGroup.json'
+                csmParametersFile: '../buildartifacts.copyandpublish/$(environmentName)/networkSecurityGroup-AzureBastionSubnet.param.json'
+                overrideParameters: '-nsgBaseName $(networkSecurityGroupName) -nsgSuffix AzureBastionSubnet'
+
+            - task: AzureResourceGroupDeployment@2
+              displayName: 'Deploy Route Table'
+              inputs:
+                azureSubscription: '${{ parameters.connectedServiceName }}'
+                resourceGroupName: "${{ format('{0}-{1}-{2}-{3}-rsg', parameters.serviceGroup, parameters.environmentName, parameters.locationShort, parameters.serviceName) }}"
+                location: '${{ parameters.location }}'
+                csmFile: '$(System.ArtifactsDirectory)/Sources/Templates/routeTable.json'
+                csmParametersFile: '../buildartifacts.copyandpublish/$(environmentName)/routeTable.param.json'
+                overrideParameters: '-routeTableName $(routeTableName)'
+
+            - task: AzureResourceGroupDeployment@2
+              displayName: 'Deploy Virtual Network'
+              inputs:
+                azureSubscription: '${{ parameters.connectedServiceName }}'
+                resourceGroupName: "${{ format('{0}-{1}-{2}-{3}-rsg', parameters.serviceGroup, parameters.environmentName, parameters.locationShort, parameters.serviceName) }}"
+                location: '${{ parameters.location }}'
+                csmFile: '$(System.ArtifactsDirectory)/Sources/Templates/virtualNetwork.json'
+                csmParametersFile: '../buildartifacts.copyandpublish/$(environmentName)/virtualNetwork.param.json'
+                overrideParameters: '-virtualNetworkName $(virtualNetworkName) -vnetCreate $(vnetCreate)'
+
+            - task: AzureResourceGroupDeployment@2
+              displayName: 'Deploy Virtual Network Subnets'
+              inputs:
+                azureSubscription: '${{ parameters.connectedServiceName }}'
+                resourceGroupName: "${{ format('{0}-{1}-{2}-{3}-rsg', parameters.serviceGroup, parameters.environmentName, parameters.locationShort, parameters.serviceName) }}"
+                location: '${{ parameters.location }}'
+                csmFile: '$(System.ArtifactsDirectory)/Sources/Templates/virtualNetworkSubnets.json'
+                csmParametersFile: '../buildartifacts.copyandpublish/$(environmentName)/virtualNetworkSubnets.param.json'
+                overrideParameters: '-routeTableName $(routeTableName) -networkSecurityGroupBaseName $(networkSecurityGroupName) -virtualNetworkName $(virtualNetworkName)'
+
+            - task: AzureResourceGroupDeployment@2
+              displayName: 'Deploy Virtual Network Peerings'
+              inputs:
+                azureSubscription: '${{ parameters.connectedServiceName }}'
+                resourceGroupName: "${{ format('{0}-{1}-{2}-{3}-rsg', parameters.serviceGroup, parameters.environmentName, parameters.locationShort, parameters.serviceName) }}"
+                location: '${{ parameters.location }}'
+                csmFile: '$(System.ArtifactsDirectory)/Sources/Templates/virtualNetworkPeerings.json'
+                csmParametersFile: '../buildartifacts.copyandpublish/$(environmentName)/virtualNetworkPeerings.param.json'
+                overrideParameters: '-virtualNetworkName $(virtualNetworkName)'

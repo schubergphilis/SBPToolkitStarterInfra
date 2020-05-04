@@ -1,0 +1,17 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "isHubVnet": {
+            "value": false
+        },
+        "virtualNetworkName": {
+            "value": "mgmt-dev001-weu-ntwk-vnt"
+        },
+        "peeredNetworks": {
+            "value": [
+                "insert_a_resource_id_here"
+            ]
+        }
+    }
+}

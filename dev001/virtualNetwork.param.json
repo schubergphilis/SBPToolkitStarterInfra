@@ -1,0 +1,27 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "vnetAddressPrefix": {
+            "value": "10.0.0.0/24"
+        },
+        "vnetEnableDdosProtection": {
+            "value": false
+        },
+        "virtualNetworkName": {
+            "value": "svgr-dev00-weu-ntwk-vnt"
+        },
+        "diagnosticResourceGroupName": {
+            "value": "svgr-dev001-weu-core-rsg"
+        },
+        "diagnosticOmsWorkspaceName": {
+            "value": "svgr-dev001-weu-core-law"
+        },
+        "diagnosticEventHubNamespaceName": {
+            "value": "svgr-dev001-weu-core-ehn"
+        },
+        "diagnosticEventHubAuthorisationRule": {
+            "value": "RootManageSharedAccessKey"
+        }
+    }
+}

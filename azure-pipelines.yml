@@ -1,0 +1,59 @@
+trigger:
+  branches:
+    include:
+    - "master"
+
+variables:
+  serviceGroup: 'serviceGroupPlaceholder'
+  sourcesPipeline: '1'
+  sourcesProject: '00000000-0000-0000-0000-000000000000'
+  vmImage: 'windows-2019'
+
+stages:
+- template: ci/stages/build.yml
+  parameters:
+    vmImage: '${{ variables.vmImage }}'
+
+- template: ci/stages/deployInfra.yml
+  parameters:
+    environmentName: 'dev001'
+    dependsOn: 'build_artifacts'
+    location: 'West Europe'
+    locationShort: 'weu'
+    serviceGroup: '${{ variables.serviceGroup }}'
+    sourcesPipeline: '${{ variables.sourcesPipeline }}'
+    sourcesProject: '${{ variables.sourcesProject }}'
+    vmImage: '${{ variables.vmImage }}'
+
+#- template: ci/stages/deployInfra.yml
+#  parameters:
+#    environmentName: 'dev001'
+#    dependsOn: 'deploy_dev001'
+#    location: 'West Europe'
+#    locationShort: 'weu'
+#    serviceGroup: '${{ variables.serviceGroup }}'
+#    sourcesPipeline: '${{ variables.sourcesPipeline }}'
+#    sourcesProject: '${{ variables.sourcesProject }}'
+#    vmImage: '${{ variables.vmImage }}'
+
+#- template: ci/stages/deployInfra.yml
+#  parameters:
+#    environmentName: 'dev001'
+#    dependsOn: 'deploy_dev001'
+#    location: 'West Europe'
+#    locationShort: 'weu'
+#    serviceGroup: '${{ variables.serviceGroup }}'
+#    sourcesPipeline: '${{ variables.sourcesPipeline }}'
+#    sourcesProject: '${{ variables.sourcesProject }}'
+#    vmImage: '${{ variables.vmImage }}'
+
+#- template: ci/stages/deployInfra.yml
+#  parameters:
+#    environmentName: 'dev001'
+#    dependsOn: 'deploy_dev001'
+#    location: 'West Europe'
+#    locationShort: 'weu'
+#    serviceGroup: '${{ variables.serviceGroup }}'
+#    sourcesPipeline: '${{ variables.sourcesPipeline }}'
+#    sourcesProject: '${{ variables.sourcesProject }}'
+#    vmImage: '${{ variables.vmImage }}'

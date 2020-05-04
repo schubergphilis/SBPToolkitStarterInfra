@@ -1,0 +1,42 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualNetworkName": {
+            "value": "mgmt-dev00-weu-ntwk-vnt"
+        },
+        "vnetSubnets": {
+            "value": [
+                {
+                    "name": "AzureBastionSubnet",
+                    "addressPrefix": "10.0.0.0/27",
+                    "serviceEndpoints": [],
+                    "delegations": [],
+                    "networkSecurityGroup": "AzureBastionSubnet",
+                    "routeTable": ""
+                },
+                {
+                    "name": "DefaultSubnet",
+                    "addressPrefix": "10.0.0.32/27",
+                    "networkSecurityGroup": "default",
+                    "routeTable": "default",
+                    "serviceEndpoints": [
+                        {
+                            "service": "Microsoft.Storage",
+                            "locations": "[parameters('serviceEndpointLocations')]"
+                        },
+                        {
+                            "service": "Microsoft.KeyVault",
+                            "locations": "[parameters('serviceEndpointLocations')]"
+                        },
+                        {
+                            "service": "Microsoft.Sql",
+                            "locations": "[parameters('serviceEndpointLocations')]"
+                        }
+                    ],
+                    "delegations": []
+                }
+            ]
+        }
+    }
+}

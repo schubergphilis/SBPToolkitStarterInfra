@@ -1,0 +1,23 @@
+parameters:
+    vmImage: ''
+
+stages:
+  - stage: build_artifacts
+    displayName: 'Build Artifacts'
+    jobs:
+      - job:  copy_and_publish
+        displayName: 'Copy and Publish Artifacts'
+        pool:
+          vmImage: ${{ parameters.vmImage }}
+        steps:
+          - task: CopyFiles@2
+            displayName: 'Copy artifacts'
+            inputs:
+              Contents: '**'
+              TargetFolder: '$(build.artifactstagingdirectory)'
+
+          - task: PublishPipelineArtifact@1
+            displayName: 'Publish Pipeline Artifacts'
+            inputs:
+              targetPath: '$(build.artifactstagingdirectory)'
+              publishLocation: 'pipeline'
