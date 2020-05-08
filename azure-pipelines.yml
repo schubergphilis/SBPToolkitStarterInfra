@@ -4,20 +4,30 @@ trigger:
     - "master"
 
 variables:
-  serviceGroup: 'serviceGroupPlaceholder'
-  sourcesPipeline: '1'
+  jsonPath: '$(Pipeline.Workspace)/artifact/s/'
+  serviceGroup: 'svgr'
+  sourcesPipeline: '0'
   sourcesProject: '00000000-0000-0000-0000-000000000000'
   vmImage: 'windows-2019'
 
+resources:
+  repositories:
+    - repository: sources
+      type: git
+      name: ccoe/sources
+      ref: refs/heads/master
+
+
 stages:
-- template: ci/stages/build.yml
+- template: Pipelines/stages/publishArtifact.yml@sources
   parameters:
     vmImage: '${{ variables.vmImage }}'
 
 - template: ci/stages/deployInfra.yml
   parameters:
     environmentName: 'dev001'
-    dependsOn: 'build_artifacts'
+    dependsOn: 'publish_pipeline_artifacts'
+    jsonPath: '${{ variables.jsonPath }}'
     location: 'West Europe'
     locationShort: 'weu'
     serviceGroup: '${{ variables.serviceGroup }}'
@@ -27,8 +37,9 @@ stages:
 
 #- template: ci/stages/deployInfra.yml
 #  parameters:
-#    environmentName: 'dev001'
+#    environmentName: 'tst001'
 #    dependsOn: 'deploy_dev001'
+#    jsonPath: '${{ variables.jsonPath }}'
 #    location: 'West Europe'
 #    locationShort: 'weu'
 #    serviceGroup: '${{ variables.serviceGroup }}'
@@ -38,8 +49,9 @@ stages:
 
 #- template: ci/stages/deployInfra.yml
 #  parameters:
-#    environmentName: 'dev001'
-#    dependsOn: 'deploy_dev001'
+#    environmentName: 'acc001'
+#    dependsOn: 'deploy_tst001'
+#    jsonPath: '${{ variables.jsonPath }}'
 #    location: 'West Europe'
 #    locationShort: 'weu'
 #    serviceGroup: '${{ variables.serviceGroup }}'
@@ -49,8 +61,9 @@ stages:
 
 #- template: ci/stages/deployInfra.yml
 #  parameters:
-#    environmentName: 'dev001'
-#    dependsOn: 'deploy_dev001'
+#    environmentName: 'prd001'
+#    dependsOn: 'deploy_acc001'
+#    jsonPath: '${{ variables.jsonPath }}'
 #    location: 'West Europe'
 #    locationShort: 'weu'
 #    serviceGroup: '${{ variables.serviceGroup }}'
