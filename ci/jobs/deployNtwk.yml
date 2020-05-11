@@ -71,6 +71,12 @@ jobs:
                 csmParametersFile: '../buildartifacts.copyandpublish/$(environmentName)/virtualNetwork.param.json'
                 overrideParameters: '-virtualNetworkName $(virtualNetworkName) -vnetCreate $(vnetCreate)'
 
+            - task: PowerShell@2
+              displayName: 'Wait for 30 seconds'
+              inputs:
+                targetType: 'inline'
+                script: 'Start-Sleep -s 30'
+
             - task: AzureResourceGroupDeployment@2
               displayName: 'Deploy Virtual Network Subnets'
               inputs:
@@ -80,13 +86,3 @@ jobs:
                 csmFile: '$(System.ArtifactsDirectory)/Sources/Templates/virtualNetworkSubnets.json'
                 csmParametersFile: '../buildartifacts.copyandpublish/$(environmentName)/virtualNetworkSubnets.param.json'
                 overrideParameters: '-routeTableName $(routeTableName) -networkSecurityGroupBaseName $(networkSecurityGroupName) -virtualNetworkName $(virtualNetworkName)'
-
-            - task: AzureResourceGroupDeployment@2
-              displayName: 'Deploy Virtual Network Peerings'
-              inputs:
-                azureSubscription: '${{ parameters.connectedServiceName }}'
-                resourceGroupName: "${{ format('{0}-{1}-{2}-{3}-rsg', parameters.serviceGroup, parameters.environmentName, parameters.locationShort, parameters.serviceName) }}"
-                location: '${{ parameters.location }}'
-                csmFile: '$(System.ArtifactsDirectory)/Sources/Templates/virtualNetworkPeerings.json'
-                csmParametersFile: '../buildartifacts.copyandpublish/$(environmentName)/virtualNetworkPeerings.param.json'
-                overrideParameters: '-virtualNetworkName $(virtualNetworkName)'
