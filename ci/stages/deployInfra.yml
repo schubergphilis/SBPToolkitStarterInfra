@@ -1,11 +1,10 @@
 parameters:
   dependsOn: ''
   environmentName: ''
+  jsonPath: ''
   location: ''
   locationShort: ''
-  serviceGroup: ''
-  sourcesPipeline: ''
-  sourcesProject: ''
+  serviceGroupShortName: ''
   vmImage: ''
 
 stages:
@@ -13,28 +12,24 @@ stages:
     dependsOn: '${{ parameters.dependsOn }}'
     displayName: "${{ format('deploy {0}', parameters.environmentName) }}"
     jobs:
-    - template: ../jobs/deployCore.yml
+    - template: Pipelines/jobs/deployCore.yml@sources
       parameters:
-        connectedServiceName: "${{ format('{0}-{1}-sub-spn', parameters.serviceGroup, parameters.environmentName) }}"
+        connectedServiceName: "${{ format('{0}-{1}-sub-spn', parameters.serviceGroupShortName, parameters.environmentName) }}"
         environmentName: '${{ parameters.environmentName }}'
         dependsOn: ''
+        jsonPath: '${{ parameters.jsonPath }}'
         location: '${{ parameters.location }}'
         locationShort: '${{ parameters.locationShort }}'
-        serviceGroup: '${{ parameters.serviceGroup }}'
-        serviceName: 'core'
-        sourcesPipeline: '${{ parameters.sourcesPipeline }}'
-        sourcesProject: '${{ parameters.sourcesProject }}'
+        serviceGroupShortName: '${{ parameters.serviceGroupShortName }}'
         vmImage: '${{ parameters.vmImage }}'
 
-    - template: ../jobs/deployNtwk.yml
+    - template: Pipelines/jobs/deployNtwk.yml@sources
       parameters:
-        connectedServiceName: "${{ format('{0}-{1}-sub-spn', parameters.serviceGroup, parameters.environmentName) }}"
+        connectedServiceName: "${{ format('{0}-{1}-sub-spn', parameters.serviceGroupShortName, parameters.environmentName) }}"
         dependsOn: 'core'
         environmentName: '${{ parameters.environmentName }}'
+        jsonPath: '${{ parameters.jsonPath }}'
         location: '${{ parameters.location }}'
         locationShort: '${{ parameters.locationShort }}'
-        serviceGroup: '${{ parameters.serviceGroup }}'
-        serviceName: 'ntwk'
-        sourcesPipeline: '${{ parameters.sourcesPipeline }}'
-        sourcesProject: '${{ parameters.sourcesProject }}'
+        serviceGroupShortName: '${{ parameters.serviceGroupShortName }}'
         vmImage: '${{ parameters.vmImage }}'

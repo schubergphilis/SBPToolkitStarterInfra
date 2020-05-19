@@ -4,11 +4,9 @@ trigger:
     - "master"
 
 variables:
-  jsonPath: '$(Pipeline.Workspace)/artifact/s/'
-  serviceGroup: 'svgr'
-  sourcesPipeline: '0'
-  sourcesProject: '00000000-0000-0000-0000-000000000000'
-  vmImage: 'windows-2019'
+  - name: vmImage
+    value: 'windows-2019'
+  - group: serviceGroup-variables
 
 resources:
   repositories:
@@ -16,7 +14,6 @@ resources:
       type: git
       name: ccoe/sources
       ref: refs/heads/master
-
 
 stages:
 - template: Pipelines/stages/publishArtifact.yml@sources
@@ -27,12 +24,10 @@ stages:
   parameters:
     environmentName: 'dev001'
     dependsOn: 'publish_pipeline_artifacts'
-    jsonPath: '${{ variables.jsonPath }}'
+    jsonPath: $(jsonPath)
     location: 'West Europe'
     locationShort: 'weu'
-    serviceGroup: '${{ variables.serviceGroup }}'
-    sourcesPipeline: '${{ variables.sourcesPipeline }}'
-    sourcesProject: '${{ variables.sourcesProject }}'
+    serviceGroupShortName: $(serviceGroupShortName)
     vmImage: '${{ variables.vmImage }}'
 
 #- template: ci/stages/deployInfra.yml
@@ -42,11 +37,9 @@ stages:
 #    jsonPath: '${{ variables.jsonPath }}'
 #    location: 'West Europe'
 #    locationShort: 'weu'
-#    serviceGroup: '${{ variables.serviceGroup }}'
-#    sourcesPipeline: '${{ variables.sourcesPipeline }}'
-#    sourcesProject: '${{ variables.sourcesProject }}'
+#    serviceGroupShortName: $(serviceGroupShortName)
 #    vmImage: '${{ variables.vmImage }}'
-
+#
 #- template: ci/stages/deployInfra.yml
 #  parameters:
 #    environmentName: 'acc001'
@@ -54,11 +47,9 @@ stages:
 #    jsonPath: '${{ variables.jsonPath }}'
 #    location: 'West Europe'
 #    locationShort: 'weu'
-#    serviceGroup: '${{ variables.serviceGroup }}'
-#    sourcesPipeline: '${{ variables.sourcesPipeline }}'
-#    sourcesProject: '${{ variables.sourcesProject }}'
+#    serviceGroupShortName: $(serviceGroupShortName)
 #    vmImage: '${{ variables.vmImage }}'
-
+#
 #- template: ci/stages/deployInfra.yml
 #  parameters:
 #    environmentName: 'prd001'
@@ -66,7 +57,5 @@ stages:
 #    jsonPath: '${{ variables.jsonPath }}'
 #    location: 'West Europe'
 #    locationShort: 'weu'
-#    serviceGroup: '${{ variables.serviceGroup }}'
-#    sourcesPipeline: '${{ variables.sourcesPipeline }}'
-#    sourcesProject: '${{ variables.sourcesProject }}'
+#    serviceGroupShortName: $(serviceGroupShortName)
 #    vmImage: '${{ variables.vmImage }}'
