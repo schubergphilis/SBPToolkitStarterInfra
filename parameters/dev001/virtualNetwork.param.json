@@ -7,21 +7,6 @@
         },
         "vnetEnableDdosProtection": {
             "value": false
-        },
-        "virtualNetworkName": {
-            "value": "svgr-dev00-weu-ntwk-vnt"
-        },
-        "diagnosticResourceGroupName": {
-            "value": "svgr-dev001-weu-core-rsg"
-        },
-        "diagnosticOmsWorkspaceName": {
-            "value": "svgr-dev001-weu-core-law"
-        },
-        "diagnosticEventHubNamespaceName": {
-            "value": "svgr-dev001-weu-core-ehn"
-        },
-        "diagnosticEventHubAuthorisationRule": {
-            "value": "RootManageSharedAccessKey"
         }
     }
 }
