@@ -51,20 +51,11 @@
         },
         "keyVaultNetworkAcls": {
             "value": {
-                "defaultAction": "Allow",
+                "defaultAction": "Deny",
                 "bypass": "AzureServices",
                 "virtualNetworkRules": [],
                 "ipRules": []
             }
-        },
-        "diagnosticResourceGroupName": {
-            "value": "svgr-dev001-weu-core-rsg"
-        },
-        "diagnosticOmsWorkspaceName": {
-            "value": "svgr-dev001-weu-core-law"
-        },
-        "diagnosticEventHubNamespaceName": {
-            "value": "svgr-dev001-weu-core-ehn"
         }
     }
 }
